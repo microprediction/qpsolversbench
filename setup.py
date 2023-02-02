@@ -21,9 +21,9 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
-    packages=["qpsolersbench"],
+    packages=["qpsolersbench","qpsolversbench.volumetrics"],
     test_suite='pytest',
-    tests_require=['pytest','qpsolvers'],
+    tests_require=['qpsolvers'],
     include_package_data=True,
     install_requires=["wheel"],
     entry_points={

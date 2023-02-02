@@ -21,6 +21,29 @@
 import numpy as np
 import scipy.sparse as spa
 from qpsolvers.problem import Problem
+from precise.skaters.covarianceutil.covrandom import random_factor_cov
+from precise.skaters.covarianceutil.covfunctions import nearest_pos_def
+
+
+def get_fin_problem(n_dim=5) -> Problem:
+    """
+       print("    min. 1/2 x^T P x + q^T x")
+       print("    s.t. G * x <= h")
+       print("         A * x == b")
+    """
+    P = random_factor_cov(n_dim=n_dim)
+    P = nearest_pos_def(P)
+    q = 0.01 * np.ones(shape=(n_dim, 1)).flatten()
+    G = np.eye(n_dim)
+    h = np.ones(shape=(n_dim,))
+    A = np.ones(shape=(n_dim,))
+    b = np.ones(shape=(1,))
+    return Problem(P, q, G, h, A, b)
+
+
+def fin_objective(x, P, q):
+    xTP = np.matmul(np.transpose(x), P)
+    return np.linalg.norm( np.dot(0.5 * xTP + q, x))
 
 
 def get_sd3310_problem() -> Problem:
