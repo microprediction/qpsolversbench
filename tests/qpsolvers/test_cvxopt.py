@@ -27,8 +27,8 @@ import scipy.sparse as spa
 from numpy import array, ones
 from numpy.linalg import norm
 
-from qpsolversbench.problems import get_sd3310_problem
-from qpsolversbench.solved_problems import get_qpsut01
+from qpsolversbench.problems.caron_problems import get_sd3310_problem
+from qpsolversbench.problems.solved_problems import get_qpsut01
 
 try:
     import cvxopt

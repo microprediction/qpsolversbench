@@ -1,3 +1,7 @@
+from numpy import dot, ones, random
+from scipy.linalg import toeplitz
+from qpsolvers.problem import Problem
+
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
@@ -20,30 +24,7 @@
 
 import numpy as np
 import scipy.sparse as spa
-from qpsolvers.problem import Problem
-from precise.skaters.covarianceutil.covrandom import random_factor_cov
-from precise.skaters.covarianceutil.covfunctions import nearest_pos_def
-
-
-def get_fin_problem(n_dim=5) -> Problem:
-    """
-       print("    min. 1/2 x^T P x + q^T x")
-       print("    s.t. G * x <= h")
-       print("         A * x == b")
-    """
-    P = random_factor_cov(n_dim=n_dim)
-    P = nearest_pos_def(P)
-    q = 0.01 * np.ones(shape=(n_dim, 1)).flatten()
-    G = np.eye(n_dim)
-    h = np.ones(shape=(n_dim,))
-    A = np.ones(shape=(n_dim,))
-    b = np.ones(shape=(1,))
-    return Problem(P, q, G, h, A, b)
-
-
-def fin_objective(x, P, q):
-    xTP = np.matmul(np.transpose(x), P)
-    return np.linalg.norm( np.dot(0.5 * xTP + q, x))
+from qpsolvers import Problem
 
 
 def get_sd3310_problem() -> Problem:
@@ -51,6 +32,7 @@ def get_sd3310_problem() -> Problem:
     Get a small dense problem with 3 optimization variables, 3 inequality
     constraints, 1 equality constraint and 0 box constraint.
     """
+    # From https://raw.githubusercontent.com/stephane-caron/qpsolvers/master/tests/problems.py
     M = np.array([[1.0, 2.0, 0.0], [-8.0, 3.0, 2.0], [0.0, 1.0, 1.0]])
     P = np.dot(M.T, M)  # this is a positive definite matrix
     q = np.dot(np.array([3.0, 2.0, 3.0]), M).reshape((3,))
@@ -160,3 +142,15 @@ def get_qpmad_demo_problem():
         ]
     )
     return Problem(P, q, G, h, lb=lb, ub=ub)
+
+
+def toeplitz_problem(n):
+    # From https://raw.githubusercontent.com/stephane-caron/qpsolvers/master/benchmark/benchmark_random_problems.py
+    # provided by Stephane Caron.
+    M, b = random.random((n, n)), random.random(n)
+    P, q = dot(M.T, M), dot(b, M)
+    G = toeplitz(
+        [1.0, 0.0, 0.0] + [0.0] * (n - 3), [1.0, 2.0, 3.0] + [0.0] * (n - 3)
+    )
+    h = ones(n)
+    return Problem(P=P,q=q, G=G, h=h )

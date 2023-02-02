@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
+# From https://github.com/stephane-caron/qpsolvers/blob/master/tests/solved_problems.py
+# Just bringing into path here.
+#
 # Copyright (C) 2016-2022 Stéphane Caron and the qpsolvers contributors.
 #
 # This file is part of qpsolvers.
@@ -141,4 +144,37 @@ def get_maros_meszaros_qptest():
     solution.x = np.array([0.7625, 0.475])
     solution.z = np.array([0.0, 4.275])
     solution.z_box = np.array([0.0, 0.0])
+    return solution
+
+
+def get_qpsut04() -> Solution:
+    """
+    Get QPSUT04 problem and its solution.
+    """
+    n = 3
+    P = np.eye(n)
+    q = 0.01 * np.ones(shape=(n, 1))  # non-flat vector
+    G = np.eye(n)
+    h = np.ones(shape=(n,))
+    A = np.ones(shape=(n,))
+    b = np.ones(shape=(1,))
+    problem = Problem(P, q, G, h, A, b)
+
+    solution = Solution(problem)
+    solution.x = 1.0 / 3.0 * np.ones(n)
+    solution.y = np.array([1.0 / 3.0 + 0.01])
+    solution.z = np.zeros(n)
+    return solution
+
+
+def get_qpsut05() -> Solution:
+    """
+    Get QPSUT05 problem and its solution.
+    """
+    P = np.array([2.0])
+    q = np.array([-2.0])
+    problem = Problem(P, q)
+
+    solution = Solution(problem)
+    solution.x = np.array([1.0])
     return solution

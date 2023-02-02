@@ -1,0 +1,2 @@
+qpsolvers>=2.7.3
+cvxopt
